@@ -42,7 +42,8 @@ def add_to_message_queue(command):
     if len(message_queue) < BUFFER_LIMIT:
         message_queue.append(command)
     else:
-        print("Message queue full. Dropping command.")
+        message_queue.clear()
+        print("Queue was full -> queue is now cleared")
 
 # Start serial thread
 serial_thread = threading.Thread(target=serial_worker, daemon=True)
@@ -81,11 +82,28 @@ with mp_face_detection.FaceDetection(model_selection=1, min_detection_confidence
             #break
 
         frame_counter += 1
+        
+
+        # Convert BGR to RGB
         rgb_frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
 
-        # Process face and pose
-        face_results = face_detector.process(rgb_frame)
-        pose_results = pose_detector.process(rgb_frame)
+        # Convert RGB to Grayscale
+        grayscale_image = cv.cvtColor(rgb_frame, cv.COLOR_RGB2GRAY)
+
+        # Equalize the grayscale image (for better contrast)
+        equalized_image = cv.equalizeHist(grayscale_image)
+
+        # Apply Gaussian blur to the equalized image
+        blurred_frame = cv.GaussianBlur(equalized_image, (5, 5), 0)
+
+        # Convert the processed grayscale image back to RGB
+        processed_rgb_frame = cv.cvtColor(blurred_frame, cv.COLOR_GRAY2RGB)
+
+        # Use the processed RGB frame for face detection
+        face_results = face_detector.process(processed_rgb_frame)
+
+
+        #pose_results = pose_detector.process(grayscale_image)
 
         frame_height, frame_width, c = frame.shape
 
@@ -171,7 +189,14 @@ with mp_face_detection.FaceDetection(model_selection=1, min_detection_confidence
         cv.putText(frame, f"FPS: {fps:.2f}", (30, 30), cv.FONT_HERSHEY_DUPLEX, 0.7, (0, 255, 255), 2)
 
         # Show the frame
+        cv.imshow("rgb_frame", rgb_frame)
+        cv.imshow("grayscale_image", grayscale_image)
+        #cv.imshow("equalized_image", equalized_image)
+        cv.imshow("blurred_frame", blurred_frame)
+        #cv.imshow("flipped_face", flipped_face)
         cv.imshow("frame", frame)
+        
+        
         key = cv.waitKey(1)
         if key == ord("q"):
             break

@@ -1,4 +1,4 @@
-# IoT_Insights
+# Gun Shooter with AI Face Detection
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">

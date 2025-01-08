@@ -32,11 +32,22 @@ Feel free to explore the code and hardware setup, customize it to your needs, an
 To get a local copy up and running follow these simple example steps.
 
 ### Installation
-
+The only thing to do is cloning this repository:
+   ```sh
+   git clone https://github.com/JonasVanhulst/AI-Gun-Shooter
+   ```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
-
+1. Navigate to the Project Directory:
+   ```sh
+   cd AI-Gun-Shooter/src
+   ```
+   Move into the project directory using the cd command.
+2. Connecting all the hardware to the PC and checking the COM port is a must before launching the code:
+   ```sh
+   python3 main.py
+   ```
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -54,7 +65,6 @@ To get a local copy up and running follow these simple example steps.
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
-
 
 <!-- CONTACT -->
 ## Contact

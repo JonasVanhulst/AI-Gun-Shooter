@@ -15,9 +15,9 @@ rotation_correction = 0
 # Shared variable for serial messages
 message_queue = []
 
-# Add this variable outside the loop
+
 fired = False
-center_threshold = 20  # Define a threshold for being "centered"
+center_threshold = 20  # Threshold for center
 
 
 # Setup serial connection
@@ -27,7 +27,6 @@ except srl.SerialException as e:
     print(f"Error opening serial port: {e}")
     ser = None
 
-# Serial worker function with buffer limit
 def serial_worker():
     while True:
         if message_queue:
@@ -99,15 +98,15 @@ with mp_face_detection.FaceDetection(model_selection=1, min_detection_confidence
         # Convert the processed grayscale image back to RGB
         processed_rgb_frame = cv.cvtColor(blurred_frame, cv.COLOR_GRAY2RGB)
 
-        # Use the processed RGB frame for face detection
+        # Processed RGB frame for face detection
         face_results = face_detector.process(processed_rgb_frame)
 
 
-        #pose_results = pose_detector.process(grayscale_image)
+        # pose_results = pose_detector.process(grayscale_image)
 
         frame_height, frame_width, c = frame.shape
 
-        # Flags to track detections
+        
         face_detected = False
 
         # Draw face detection results
@@ -146,7 +145,7 @@ with mp_face_detection.FaceDetection(model_selection=1, min_detection_confidence
             offset_x = face_center_x - screen_center_x
             offset_y = face_center_y - screen_center_y
 
-            dynamic_step_x = min(5, abs(offset_x) // 40)  # Adjust scaling factor (e.g., 40)
+            dynamic_step_x = min(5, abs(offset_x) // 40)
             dynamic_step_y = min(5, abs(offset_y) // 40)
 
             rotation_correction = 0
@@ -162,12 +161,11 @@ with mp_face_detection.FaceDetection(model_selection=1, min_detection_confidence
             elif offset_y < -20 and tilt <= 100 - dynamic_step_y:
                 tilt_correction = dynamic_step_y
 
-            # Apply corrections
-            # Apply corrections
+           
             rotate = max(0, min(100, rotate + rotation_correction))
             tilt = max(0, min(100, tilt + tilt_correction))
 
-            # Debugging output
+           
             print(f"Offset Y: {offset_y}, Tilt Correction: {tilt_correction}, New Tilt: {tilt}")
 
             add_to_message_queue(f"tilt {tilt}\n")
@@ -188,12 +186,12 @@ with mp_face_detection.FaceDetection(model_selection=1, min_detection_confidence
         fps = frame_counter / (time.time() - start_time)
         cv.putText(frame, f"FPS: {fps:.2f}", (30, 30), cv.FONT_HERSHEY_DUPLEX, 0.7, (0, 255, 255), 2)
 
-        # Show the frame
+        
         cv.imshow("rgb_frame", rgb_frame)
         cv.imshow("grayscale_image", grayscale_image)
-        #cv.imshow("equalized_image", equalized_image)
+        # cv.imshow("equalized_image", equalized_image)
         cv.imshow("blurred_frame", blurred_frame)
-        #cv.imshow("flipped_face", flipped_face)
+        # cv.imshow("flipped_face", flipped_face)
         cv.imshow("frame", frame)
         
         
@@ -201,6 +199,6 @@ with mp_face_detection.FaceDetection(model_selection=1, min_detection_confidence
         if key == ord("q"):
             break
 
-    #cap.release()
+    # cap.release()
     cv.destroyAllWindows()
 
